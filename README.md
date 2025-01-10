@@ -18,29 +18,31 @@ This repository contains the imitation learning source code and trained model fo
 - `train.py`: trains the IL model
 
 ### Evaluation
-- `imitation_node.py`: node to run the trained IL model
-- `performance.py`: node to compute the accuracy of the IL Model compared to its expert (gap_follow) in redbull_ring_obs map
+- `imitation_node.py`: runs the trained IL model
+- `performance.py`: computes the accuracy of the IL Model compared to its expert (`gap_follow.py`) in redbull_ring_obs map
 
 ### `mlp_constants.py`
-Since there are many common constants shared across multiple nodes, we created a separate file to assign values to them, avoiding the need to manually update values in each node
+Since there are a number of common constants shared across multiple nodes, we created a separate file to assign values to them, avoiding the need to manually update values in each node
 
-- Device: device used to train or load the model
+- `DEVICE`: device used to train or load the model
     - Our IL model was trained with Mac MPS. If you are using Windows and have an Nvidia GPU, please change the device to CUDA
 - MLP constants: used to define neural network class object
-- Epochs: specifies the number of iterations over the entire training dataset
-- Dataset: names the dataset used for collection or training
-- Model: names the model to train or the model to run <br><br>
+- `EPOCHS`: specifies the number of iterations over the entire training dataset
+- `DATASET`: names the dataset used for collection or training
+- `MODEL`: names the model to train or the model to run <br><br>
 
 
 # How to collect expert data and train 
-- If you want to run `data_collector` or `data_filter`:
+- The trained IL model is already in the `saved model` folder. However, if you wish to collect expert data and train the model yourself, please follow the instructions below.
+    - We would like to note that since certain hyperparameters are influenced by the size of the dataset, your own trained model might not perform as good as the provided model from this repo due to the differences in dataset size. 
+- To run `data_collector.py` or `data_filter.py`:
     - In `mlp_constants.py`, set `DATASET_TO_COLLECT` to name your dataset
     - In both files, change the path to your own
-    - Run data_collector or data_filter first and run expert node (which is gap_follow for our project) afterward
-    - After you collected enough data, __please turn off data_collector or data_filter node first__ before turning off the expert node. Turning off tbe expert node first will cause the car to crash, and this will be included in the training data
+    - Run `data_collector.py` or `data_filter.py` first and run expert node (which is gap_follow for our project) afterward
+    - After you collected enough data, __please turn off data_collector.py or data_filter.py node first__ before turning off the expert node. Turning off the expert node first will cause the car to crash, and this will be included in the training data
 
 -  To train the car, choose the size of neural network layers, `epochs` size, and specify `DATASET_TO_TRAIN` and `MODEL_TO_TRAIN` in `mlp_constants.py`. Then, run `train.py` to train 
-    - In `train.py`, if you want to train the existing model, uncomment the load model statement on line 67. If not, leave it commented <br><br>
+    - In `train.py`, if you want to load and train the existing model, uncomment the load model statement on line 67. Otherwise, leave it commented <br><br>
 
 
 
@@ -53,6 +55,11 @@ Since there are many common constants shared across multiple nodes, we created a
     - To properly evaluate a model, we always tested after the training process is done or after stopping other nodes not used in the evaluation 
     - If you really need to run other processes together, you may need more computational resources (e.g. allow more memory to Docker)<br><br>
 
+# How to run the expert
+- To evaluate the expert performance:
+    - Run `gap_follow.py` on redbull_ring_obs or levine_blocked
+    - To run it with the IL model, you need to run `opp_gap_follow.py` not `gap_follow.py`
+        - Please follow the levine_blocked 1v1 race instruction below <br><br>
 
 # Maps used in evaluation
 - Redbull Ring Obstacles Map:
@@ -64,11 +71,12 @@ Since there are many common constants shared across multiple nodes, we created a
 - Levine Blocked Map:
     - We used this map to compare the path planning of the IL model and the expert. We also used this map to do racing with an opponent car to test if it can overtake the car ahead
     - If you changed the `stheta` value to 3.14159 to use redbull ring map earlier, please change it back to 0.0 so that it can drive counter-clockwise in this map
-    - To run it with an opponent car:
-        - increase the number of cars in `sim.yaml` to 2 and set the opponent stating pose to be `sx1 = 4.0` and `sy1 = -0.5` to place the opponent's statring grid 4m ahead of IL model's starting grid
-            - You can choose the opponent car's starting grid, but the farther it starts, the longer it will take for the IL model to overtake it
+    - 1v1 race with an opponent car:
+        - Increase the number of cars in `sim.yaml` to 2 and set the opponent stating pose to be `sx1 = 4.0` and `sy1 = -0.5` to place the opponent's statring grid 4m ahead of IL model's starting grid
+            - You can choose your own coordinates for the opponent car's starting grid, but the farther it starts, the longer it will take for the IL model to overtake it
         - In the RViz simulator, add the Robot Model and set description topic of the opponent robot model to `opp_robot_description`
         - Run `opp_gap_follow.py` to run the opponent car
+        - Run `imitation_node.py` to run the IL model
 
 
 
