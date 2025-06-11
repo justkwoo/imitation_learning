@@ -8,7 +8,6 @@ from scipy import interpolate
 from torch.utils.data import ConcatDataset, Dataset, DataLoader
 from mlp_constants import *
 
-# https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#creating-a-custom-dataset-for-your-files
 class ExpertDataset(Dataset):
     def __init__(self, expert_filepath, transform=None, target_transform=None):
         self.expert_data = pd.read_pickle(expert_filepath)
@@ -46,7 +45,6 @@ class NeuralNetwork(nn.Module):
         return self.mlp(input)
 
 
-# https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#preparing-your-data-for-training-with-dataloaders
 def train_model():
     batch_size = 64
     epochs = EPOCHS
@@ -70,7 +68,6 @@ def train_model():
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     
     # the len of dataloader is dataset/batch_size
-    #https://machinelearningmastery.com/creating-a-training-loop-for-pytorch-models/
     for epoch in range(epochs):
         epoch_loss = 0.0
       
