@@ -1,6 +1,15 @@
 # Imitation Learning
 This repository contains the imitation learning source code and trained model for F1 Tenth autononomus racing <br><br>
 
+
+# Update
+- We have identified suspected cases where our expert node `gap_follow` and `opp_gap_follow` might have been reused for course assignments. To maintain academic integrity, `gap_follow` and `opp_gap_follow` have been removed from this repository.
+- If you would like to test the expert node or opponent export node, please contact us at justinkim0345@gmail.com
+ with a brief explanation verifying that you are either:
+    * a non-UBC student, or
+    * a UBC student who is not required to take CPEN 391, or has already completed CPEN 391
+
+
 # Architectural Overview
 
 ### Expert 
